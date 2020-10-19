@@ -2,7 +2,6 @@ package com.example.geoquiz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
 
-
     private Question[] mQuestionBank = new Question[] {
       new Question(R.string.question_africa, false),
       new Question(R.string.question_americas, true),
@@ -33,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0;
+
+    private int numOfCorrectAnswers = 0;
+    private int numOfQuestions = mQuestionBank.length;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,17 +100,30 @@ public class MainActivity extends AppCompatActivity {
     private void checkAnswer(boolean userPressedTrue){
         mFalseButton.setEnabled(false);
         mTrueButton.setEnabled(false);
+
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
         int messageResId = 0;
 
         if(userPressedTrue == answerIsTrue){
             messageResId = R.string.correct_toast;
+            numOfCorrectAnswers += 1;
         } else {
             messageResId = R.string.incorrect_toast;
         }
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT)
                 .show();
+
+        if(mCurrentIndex == mQuestionBank.length - 1){
+            Toast.makeText(this, determineGrade(), Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
+    private String determineGrade(){
+        float percentage = (100 * (float)numOfCorrectAnswers) / (float)numOfQuestions;
+        String formattedPercentage = String.format("%.0f%%", percentage);
+        return formattedPercentage;
     }
 
     @Override
