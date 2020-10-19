@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 checkAnswer(true);
             }
         });
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 checkAnswer(false);
             }
         });
@@ -72,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
+                mTrueButton.setEnabled(true);
+                mFalseButton.setEnabled(true);
             }
         });
 
@@ -93,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(boolean userPressedTrue){
+        mFalseButton.setEnabled(false);
+        mTrueButton.setEnabled(false);
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
         int messageResId = 0;
 
