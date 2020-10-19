@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
 
     private static final String TAG = "QuizActivity";
+    private static final String KEY_INDEX = "index";
 
 
     private Question[] mQuestionBank = new Question[] {
@@ -32,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0;
-    private int mPreviousIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,21 +40,19 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_main);
 
+        if(savedInstanceState != null){
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
+
+
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
-//        int question = mQuestionBank[mCurrentIndex].getTextResId();
-//        mQuestionTextView.setText(question);
-
 
         mTrueButton = (Button) findViewById(R.id.true_button);
 
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Does nothing yet, but soon!
-//                Toast toast = Toast.makeText(MainActivity.this,
-//                        R.string.correct_toast, Toast.LENGTH_SHORT);
-//                toast.show();
                 checkAnswer(true);
             }
         });
@@ -64,10 +62,6 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Does nothing yet, but soon!
-//                Toast toast = Toast.makeText(getApplicationContext(),
-//                        R.string.incorrect_toast, Toast.LENGTH_SHORT);
-//                toast.show();
                 checkAnswer(false);
             }
         });
@@ -76,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                //mPreviousIndex = mCurrentIndex;
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
             }
@@ -86,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         mPrevButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                mPreviousIndex = mCurrentIndex;
                 mCurrentIndex = mCurrentIndex == 0 ? mQuestionBank.length - 1 % mQuestionBank.length : (mCurrentIndex - 1) % mQuestionBank.length;
                 updateQuestion();
             }
@@ -142,5 +134,12 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy(){
         super.onDestroy();
         Log.d(TAG, "onDestroy() called");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
     }
 }
